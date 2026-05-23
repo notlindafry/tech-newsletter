@@ -87,6 +87,7 @@ Scan for RIF or workforce reduction announcements at tech companies that are pub
 
 OUTPUT FORMAT
 
+Begin your response with the opening HTML tag. Do not narrate your search process, describe your methodology, summarize what you are about to do, or include any preamble or transitional language before the HTML output. The report starts with the HTML — nothing before it.
 At the top of the report, flag the three highest-priority items across all categories. Rank by: (1) named target company involvement, (2) open role or job search signal over content opportunity, (3) regulatory or leadership change over general market development.
 
 For each item in Categories 0 through 4, provide:
@@ -103,6 +104,12 @@ For each item in Categories 5 through 9, provide:
 - Signal type: Content opportunity, Job search signal, or Both.
 - Source: direct link to the original article or filing.
 
+When flagging errors and limitations, apply the following rules throughout the report.
+If a source is paywalled or only partially accessible, include the item but add a note in the Source field: "Paywalled — summary based on headline and visible excerpt only. Verify before acting."
+If a hiring window temperature assessment in Category 3 is based on a single signal or thin evidence, add a note after the temperature rating: "Low confidence — based on limited signal."
+If a job posting in Category 0 cannot be confirmed as currently active, note it explicitly: "Posting status unconfirmed — verify before outreach."
+If two or more sources report the same event with conflicting details, include the item but note the conflict: "Conflicting reports — see sources." and provide both links.
+If web search returns no results for a specific target company in a given category, do not infer absence of news. Note it as: "No confirmed results found for [company] this week — coverage may be incomplete."
 At the end of the report, include a final section titled THIS WEEK'S RECOMMENDED POST. Select the single strongest LinkedIn content opportunity from the week's scan. Specify whether it is a thinky post (industry POV, analytical) or a human/leadership post (warmer, story-driven). Provide a one-sentence opening claim that Linda could use or adapt as the post's opening line. Do not write the full post — just the angle, the type, and the opening hook.
 
 Format the full output as clean HTML suitable for an email client. Use <h2> for category headers, <h3> for item titles, <strong> for field labels. Wrap each item in a <div> with a thin bottom border. Use <a href=""> for all source links. Do not use markdown. Plain prose goes in <p> tags. Keep the HTML simple — no inline JavaScript, no external stylesheets, no complex nesting.
