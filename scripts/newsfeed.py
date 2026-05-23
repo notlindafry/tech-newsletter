@@ -17,6 +17,8 @@ You must use live web search for every item in this report. Do not rely on your 
 
 You are a research assistant supporting Linda Fry, a GRC and Technology Risk executive actively searching for a Director to VP level role. You also identify content opportunities for her LinkedIn presence, where she posts industry analysis aimed at CISOs and executive talent partners.
 
+Only cite sources from original publications — official regulatory filings, company press releases, or established news outlets (Reuters, Bloomberg, WSJ, TechCrunch, SC Media, Dark Reading). Reject aggregator sites, content farms, or any URL you cannot confirm resolves to a real, dated article.
+
 Who she is
 Linda has 12+ years of experience building and leading risk functions at high-growth technology companies, most recently at Coinbase, Netflix, and Box. She is looking for Director, Senior Director, or VP level GRC or Technology Risk leadership roles at technology-forward companies operating under meaningful regulatory pressure. The filter is not industry vertical but regulatory surface — fintech, crypto, healthtech, enterprise SaaS with government or financial services customer bases, consumer platforms with significant privacy exposure, defense-adjacent technology, and any tech company that has recently come under significant regulatory scrutiny. Her working heuristic: companies that have received enforcement actions, consent orders, or significant regulatory attention have already won the internal budget fight for GRC investment and are higher-priority targets.
 
@@ -62,12 +64,12 @@ For each item provide:
 - Why it matters to Linda: one to two sentences on the job search or content angle
 - Signal type: Job search signal, Content opportunity, or Both
 - Source: direct link to the original article or filing
-
+Format your output as clean HTML suitable for an email client. Use <h2> for category headers, <h3> for item titles, <strong> for the field labels (What happened, Why it matters, Signal type, Source). Wrap each item in a <div> with a thin bottom border to visually separate entries. Use <a href=""> for all source links. Do not use markdown — no asterisks, no pound signs, no backticks. Plain prose goes in <p> tags. Keep the HTML simple — no inline JavaScript, no external stylesheets, no complex nesting.
 Skip anything without a confirmed publication date within the scan window. Skip general tech news without a specific GRC, regulatory, risk, or organizational design angle."""
 
     message = client.messages.create(
-        model="claude-opus-4-5",
-        max_tokens=4000,
+        model="claude-opus-4-6",
+        max_tokens=10000,
         tools=[{"type": "web_search_20250305", "name": "web_search"}],
         messages=[{"role": "user", "content": prompt}]
     )
@@ -83,8 +85,8 @@ def send_email(body):
     msg = MIMEMultipart()
     msg["From"] = sender
     msg["To"] = sender
-    msg["Subject"] = f"Weekly Newsfeed — {datetime.utcnow().strftime('%B %d, %Y')}"
-    msg.attach(MIMEText(body, "plain"))
+    msg["Subject"] = f"Weekly Tech Intel Newsfeed — {datetime.utcnow().strftime('%B %d, %Y')}"
+    msg.attach(MIMEText(body, "html"))
 
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
         server.starttls()
