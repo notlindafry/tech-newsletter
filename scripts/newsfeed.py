@@ -1,15 +1,15 @@
 import anthropic
 import smtplib
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def get_newsfeed():
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
-    today = datetime.utcnow().strftime("%B %d, %Y")
-    week_ago = (datetime.utcnow() - timedelta(days=7)).strftime("%B %d, %Y")
+    today = datetime.now(timezone.utc).strftime("%B %d, %Y")
+    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%B %d, %Y")
 
     prompt = f"""Today's date is {today}. The scan window is {week_ago} through {today}. Only include items published within this window. Verify the publication date of every source before including it — reject anything outside the scan window.
 
@@ -76,7 +76,10 @@ Skip anything without a confirmed publication date within the scan window. Skip 
 
     # Extract all text blocks from the response (tool use returns mixed content)
     text_parts = [block.text for block in message.content if hasattr(block, "text")]
-    return "\n\n".join(text_parts)
+    report = "\n\n".join(text_parts).strip()
+    if not report:
+        raise RuntimeError("Newsfeed generation returned no text content; aborting before sending an empty email.")
+    return report
 
 def send_email(body):
     sender = os.environ["GMAIL_ADDRESS"]
@@ -85,7 +88,7 @@ def send_email(body):
     msg = MIMEMultipart()
     msg["From"] = sender
     msg["To"] = sender
-    msg["Subject"] = f"Weekly Tech Intel Newsfeed — {datetime.utcnow().strftime('%B %d, %Y')}"
+    msg["Subject"] = f"Weekly Tech Intel Newsfeed — {datetime.now(timezone.utc).strftime('%B %d, %Y')}"
     msg.attach(MIMEText(body, "html"))
 
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
