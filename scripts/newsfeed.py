@@ -49,9 +49,13 @@ Search LinkedIn, Greenhouse, Lever, Ashby, and company career pages for active j
 
 The 7-day scan window above does NOT apply to this category. Roles are governed by whether they are currently live, not by when they were first posted. A still-open role posted three weeks ago is in scope; a role posted yesterday that has already closed is not.
 
-Every posting you include must be currently live and open to applications. Search results and search-engine snippets routinely surface roles that have already been filled or closed, so a search hit is not sufficient evidence that a role is open. Before including any role, open the posting page itself and confirm from its content that it is still accepting applications. Reject the posting — do not list it — if any of the following are true: the page does not load or returns an error; the page states the role is closed, filled, paused, on hold, expired, or "no longer accepting applications"; the listing shows no posting or last-refreshed date; or the posting date is more than 30 days before today. When in doubt, exclude rather than guess: an omitted role is fine, a dead role is the failure mode to avoid.
+Every posting you include must be currently live and open to applications. Search results and search-engine snippets routinely surface roles that have already been filled or closed, so a search hit is not sufficient evidence that a role is open. Before including any role, open the posting page itself and confirm from its content that it is still accepting applications.
 
-For each confirmed role, provide the role title, company, the posting or last-refreshed date exactly as it appears on the page, and a direct link to the posting itself (not a search results page or a job-aggregator listing). Note whether the company has appeared in any other category this week, as co-occurrence is a strong signal. If you cannot confirm a single live role this week, output: "Nothing confirmed this week."
+A page that returns successfully is NOT proof the role is live. Closed postings very frequently still "work" but silently redirect to the company's default careers homepage, a job-search index, or a generic "open positions" listing, while the original link continues to resolve. You must confirm that the final page you land on actually displays that exact role — its specific title and description, with an active apply control. If the link instead lands on a careers homepage, a job-search or "open positions" index, a search results page, or a "job not found" / "this position is no longer available" page, the role is dead — exclude it. The link you put in the Source field must point to that live, role-specific detail page, not to a redirect target or a careers landing page.
+
+Reject the posting — do not list it — if any of the following are true: the page does not load or returns an error; the link redirects to or lands on a generic careers page, job-search index, or listing rather than the specific role's detail page; the final page does not display that exact role's title and description with an active apply control; the page states the role is closed, filled, paused, on hold, expired, or "no longer accepting applications"; the listing shows no posting or last-refreshed date; or the posting date is more than 30 days before today. When in doubt, exclude rather than guess: an omitted role is fine, a dead role is the failure mode to avoid.
+
+For each confirmed role, provide the role title, company, the posting or last-refreshed date exactly as it appears on the page, and a direct link to the role-specific posting itself (not a search results page, careers homepage, or job-aggregator listing). Note whether the company has appeared in any other category this week, as co-occurrence is a strong signal. If you cannot confirm a single live role this week, output: "Nothing confirmed this week."
 
 CATEGORY 1 — REGULATORY ACTIONS
 
@@ -71,7 +75,13 @@ GENIUS Act developments and broader crypto regulatory activity.
 
 CATEGORY 5 — MAJOR INDUSTRY REPORTS AND DATA RELEASES
 
-Verizon DBIR, CrowdStrike Global Threat Report, Gartner, SANS, CSA, OWASP, FAIR Institute publications, Hubbard Decision Research content.
+Scan broadly across major industry data releases and the technology and cybersecurity think tanks, research centers, and standards bodies listed below. Include a new report, framework update, dataset, or publication only when it carries a clear angle relevant to Governance, Risk, and Compliance or AI Governance — skip purely technical or operational releases with no GRC, risk-quantification, board-governance, regulatory, or AI-governance relevance.
+
+Core data releases: Verizon DBIR, CrowdStrike Global Threat Report, Gartner, SANS, CSA, FAIR Institute publications, Hubbard Decision Research content.
+
+Think tanks and research centers: Center for Security and Emerging Technology (CSET), Institute for AI Policy and Strategy (IAPS), Institute for Security and Technology (IST), Institute for Critical Infrastructure Technology (ICIT), UC Berkeley Center for Long-Term Cybersecurity.
+
+Standards bodies and frameworks: NIST Cybersecurity Framework (CSF), NIST Trustworthy & Responsible AI Resource Center, ISO 27001, CIS Critical Security Controls, ISACA, MITRE Corporation, OWASP, PCI Security Standards Council (PCI SSC), HITRUST. Flag new releases, framework revisions, draft guidance, or notable commentary from these bodies when they bear on GRC or AI governance.
 
 CATEGORY 6 — INCIDENTS AND GOVERNANCE FAILURES
 
@@ -84,10 +94,6 @@ EU AI Act implementation, US regulatory activity on AI, enterprise AI deployment
 CATEGORY 8 — GRC METHODOLOGY AND ORGANIZATIONAL DESIGN
 
 Developments in quantitative risk (FAIR, CRQ, Hubbard, ERQI), GRC Engineering movement activity, board and audit committee governance, SEC cybersecurity disclosure rules, CISO mandate and org design trends, supply chain and third-party risk.
-
-CATEGORY 9 — NARRATIVE SUPPORT
-
-Scan for RIF or workforce reduction announcements at tech companies that are publicly framed as AI-driven transformation or efficiency restructuring. Flag these explicitly as narrative support: Linda experienced a similar RIF and documenting the pattern across the market helps her contextualize her tenure publicly and in interviews. Note the company, the framing used, and whether the restructuring profile (larger teams, broader spans of control) resembles or contradicts a genuine AI transformation model.
 
 ---
 
@@ -104,7 +110,7 @@ For each item in Categories 0 through 4, provide:
 - Hiring window temperature (Categories 0 and 3 only): Hot, Warm, Cold, or Avoid, with a one-sentence rationale.
 - Source: direct link to the original article, filing, or job posting.
 
-For each item in Categories 5 through 9, provide:
+For each item in Categories 5 through 8, provide:
 - What happened: one to two sentences, factual and specific.
 - Why it matters to Linda: one to two sentences on the content angle.
 - Signal type: Content opportunity, Job search signal, or Both.
