@@ -41,7 +41,7 @@ Do not limit monitoring to this list. Flag any tech-forward company that fits th
 
 SCAN CATEGORIES AND PRIORITY ORDER
 
-Category 0 and Categories 1 through 4 are job search signals and take priority over Categories 5 through 8, which are content opportunities. Within each tier, items involving named target companies rank above general market developments.
+Category 0 and Categories 1 through 3 are job search signals and take priority over Categories 4 through 7, which are content opportunities. Within each tier, items involving named target companies rank above general market developments.
 
 CATEGORY 0 — OPEN ROLES (highest priority, run first)
 
@@ -61,19 +61,15 @@ CATEGORY 1 — REGULATORY ACTIONS
 
 Enforcement orders, consent decrees, new rulemaking, or significant regulatory attention affecting any tech-forward company. Relevant regulators include OCC, CFPB, SEC, FTC, FCC, FDA, FDIC, FinCEN, state-level regulators, and major international regulators, notably in Europe.
 
-CATEGORY 2 — LEADERSHIP CHANGES
-
-New CISOs, CROs, Chief Risk Officers, or Heads of GRC at target companies or in the broader tech market. Flag new CISO hires at target companies with particular urgency: in Linda's direct observation, new CISO hires frequently consolidate or eliminate existing risk functions. A new CISO at a target company is a 30-day outreach window — note this explicitly.
-
-CATEGORY 3 — ORG SIGNALS
+CATEGORY 2 — ORG SIGNALS
 
 Layoffs, RIFs, restructuring, IPOs, late-stage funding rounds, bank charter applications, or significant M&A activity at tech-forward companies in regulated spaces. For each item, assign a hiring window temperature: Hot (company is likely actively building the function — e.g., post-enforcement action, post-funding, new CISO in seat), Warm (conditions are favorable but timing is uncertain), Cold (company is mid-restructure or in a hiring freeze), or Avoid (signals suggest Linda should not prioritize this target right now, with a brief reason).
 
-CATEGORY 4 — CRYPTO REGULATION
+CATEGORY 3 — CRYPTO REGULATION
 
 GENIUS Act developments and broader crypto regulatory activity.
 
-CATEGORY 5 — MAJOR INDUSTRY REPORTS AND DATA RELEASES
+CATEGORY 4 — MAJOR INDUSTRY REPORTS AND DATA RELEASES
 
 Scan broadly across major industry data releases and the technology and cybersecurity think tanks, research centers, and standards bodies listed below. Include a new report, framework update, dataset, or publication only when it carries a clear angle relevant to Governance, Risk, and Compliance or AI Governance — skip purely technical or operational releases with no GRC, risk-quantification, board-governance, regulatory, or AI-governance relevance.
 
@@ -83,15 +79,15 @@ Think tanks and research centers: Center for Security and Emerging Technology (C
 
 Standards bodies and frameworks: NIST Cybersecurity Framework (CSF), NIST Trustworthy & Responsible AI Resource Center, ISO 27001, CIS Critical Security Controls, ISACA, MITRE Corporation, OWASP, PCI Security Standards Council (PCI SSC), HITRUST. Flag new releases, framework revisions, draft guidance, or notable commentary from these bodies when they bear on GRC or AI governance.
 
-CATEGORY 6 — INCIDENTS AND GOVERNANCE FAILURES
+CATEGORY 5 — INCIDENTS AND GOVERNANCE FAILURES
 
 Significant breaches, technology failures, or governance failures at tech-forward companies.
 
-CATEGORY 7 — AI GOVERNANCE
+CATEGORY 6 — AI GOVERNANCE
 
 EU AI Act implementation, US regulatory activity on AI, enterprise AI deployment failures, agentic AI risk incidents, AI agent governance frameworks. Prioritize items involving agentic AI risk failures, enterprise AI deployment governance gaps, and regulatory action touching AI deployment in financial services or healthtech specifically. These intersect directly with Linda's positioning as an AI-native GRC leader.
 
-CATEGORY 8 — GRC METHODOLOGY AND ORGANIZATIONAL DESIGN
+CATEGORY 7 — GRC METHODOLOGY AND ORGANIZATIONAL DESIGN
 
 Developments in quantitative risk (FAIR, CRQ, Hubbard, ERQI), GRC Engineering movement activity, board and audit committee governance, SEC cybersecurity disclosure rules, CISO mandate and org design trends, supply chain and third-party risk.
 
@@ -100,17 +96,17 @@ Developments in quantitative risk (FAIR, CRQ, Hubbard, ERQI), GRC Engineering mo
 OUTPUT FORMAT
 
 Begin your response with the opening HTML tag. Do not narrate your search process, describe your methodology, summarize what you are about to do, or include any preamble or transitional language before the HTML output. The report starts with the HTML — nothing before it.
-At the top of the report, flag the three highest-priority items across all categories. Rank by: (1) named target company involvement, (2) open role or job search signal over content opportunity, (3) regulatory or leadership change over general market development.
+At the top of the report, flag the three highest-priority items across all categories. Rank by: (1) named target company involvement, (2) open role or job search signal over content opportunity, (3) regulatory action over general market development.
 
-For each item in Categories 0 through 4, provide:
+For each item in Categories 0 through 3, provide:
 - What happened: one to two sentences, factual and specific.
 - Why it matters to Linda: one to two sentences on the job search or content angle.
 - Recommended action: a specific next step and, where relevant, a time window. 
 - Signal type: Job search signal, Content opportunity, or Both.
-- Hiring window temperature (Categories 0 and 3 only): Hot, Warm, Cold, or Avoid, with a one-sentence rationale.
+- Hiring window temperature (Categories 0 and 2 only): Hot, Warm, Cold, or Avoid, with a one-sentence rationale.
 - Source: direct link to the original article, filing, or job posting.
 
-For each item in Categories 5 through 8, provide:
+For each item in Categories 4 through 7, provide:
 - What happened: one to two sentences, factual and specific.
 - Why it matters to Linda: one to two sentences on the content angle.
 - Signal type: Content opportunity, Job search signal, or Both.
@@ -118,7 +114,7 @@ For each item in Categories 5 through 8, provide:
 
 When flagging errors and limitations, apply the following rules throughout the report.
 If a source is paywalled or only partially accessible, include the item but add a note in the Source field: "Paywalled — summary based on headline and visible excerpt only. Verify before acting."
-If a hiring window temperature assessment in Category 3 is based on a single signal or thin evidence, add a note after the temperature rating: "Low confidence — based on limited signal."
+If a hiring window temperature assessment in Category 2 is based on a single signal or thin evidence, add a note after the temperature rating: "Low confidence — based on limited signal."
 If a job posting in Category 0 cannot be confirmed as currently live and accepting applications by opening the posting page, exclude it entirely. Do not list unverified or stale roles even with a caveat — in this category a wrong listing is worse than an omission.
 If two or more sources report the same event with conflicting details, include the item but note the conflict: "Conflicting reports — see sources." and provide both links.
 If web search returns no results for a specific target company in a given category, do not infer absence of news. Note it as: "No confirmed results found for [company] this week — coverage may be incomplete."
