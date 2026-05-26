@@ -47,6 +47,26 @@ CATEGORY 0 — OPEN ROLES (highest priority, run first)
 
 Search LinkedIn, Greenhouse, Lever, Ashby, and company career pages for active job postings matching Director, Senior Director, or VP level GRC, Technology Risk, or Enterprise Risk roles at target companies and close analogs.
 
+In addition to direct company career pages, scan the following venture-capital portfolio job boards, which aggregate openings across each firm's portfolio companies. These are high-yield for Linda because portfolio companies skew toward high-growth, tech-forward businesses operating under meaningful regulatory pressure. On each board, filter for Director, Senior Director, or VP level GRC, Technology Risk, Enterprise Risk, or Chief Risk roles that fit the regulatory-pressure profile described above. Treat each URL as a starting point only: if a board has moved or a link returns an error, locate that firm's current portfolio or talent job board by web search before giving up. These boards are aggregators, so use them to discover roles, not as Source links — when you find a matching role, follow through to the underlying company posting (its Greenhouse, Lever, Ashby, or career-page listing) and cite that live, role-specific page as the Source; only if no underlying posting exists should you cite the board's role-specific detail page. Never cite a board's index, listing, or search page as a Source. Apply the same live-link verification rules described below to every role before listing it.
+
+- Andreessen Horowitz (a16z): https://portfoliojobs.a16z.com
+- Index Ventures: https://jobs.indexventures.com
+- General Catalyst: https://jobs.generalcatalyst.com
+- Khosla Ventures: https://jobs.khoslaventures.com
+- Sequoia Capital: https://jobs.sequoiacap.com
+- Greylock Partners: https://jobs.greylock.com
+- Kleiner Perkins: https://jobs.kleinerperkins.com
+- BITKRAFT Ventures: https://bitkraft.vc/jobs
+- Accel: https://jobs.accel.com
+- Y Combinator (Work at a Startup): https://www.workatastartup.com
+- Contrary: https://jobs.contrary.com
+- Pear VC: https://jobs.pear.vc
+- Battery Ventures: https://jobs.battery.com
+- New Enterprise Associates (NEA): https://jobs.nea.com
+- Antler: https://jobs.antler.co
+- Lightspeed Venture Partners: https://jobs.lsvp.com/jobs
+- Bessemer Venture Partners: https://jobs.bvp.com/jobs
+
 The 7-day scan window above does NOT apply to this category. Roles are governed by whether they are currently live, not by when they were first posted. A still-open role posted three weeks ago is in scope; a role posted yesterday that has already closed is not.
 
 Every posting you include must be currently live and open to applications. Search results and search-engine snippets routinely surface roles that have already been filled or closed, so a search hit is not sufficient evidence that a role is open. Before including any role, open the posting page itself and confirm from its content that it is still accepting applications.
