@@ -45,7 +45,13 @@ Category 0 and Categories 1 through 4 are job search signals and take priority o
 
 CATEGORY 0 — OPEN ROLES (highest priority, run first)
 
-Search LinkedIn, Greenhouse, Lever, and company career pages for active job postings matching Director, Senior Director, or VP level GRC, Technology Risk, or Enterprise Risk roles at target companies and close analogs. Flag the role title, company, posting date, and a direct link to the job posting. Note whether the company has appeared in any other category this week, as co-occurrence is a strong signal.
+Search LinkedIn, Greenhouse, Lever, Ashby, and company career pages for active job postings matching Director, Senior Director, or VP level GRC, Technology Risk, or Enterprise Risk roles at target companies and close analogs.
+
+The 7-day scan window above does NOT apply to this category. Roles are governed by whether they are currently live, not by when they were first posted. A still-open role posted three weeks ago is in scope; a role posted yesterday that has already closed is not.
+
+Every posting you include must be currently live and open to applications. Search results and search-engine snippets routinely surface roles that have already been filled or closed, so a search hit is not sufficient evidence that a role is open. Before including any role, open the posting page itself and confirm from its content that it is still accepting applications. Reject the posting — do not list it — if any of the following are true: the page does not load or returns an error; the page states the role is closed, filled, paused, on hold, expired, or "no longer accepting applications"; the listing shows no posting or last-refreshed date; or the posting date is more than 30 days before today. When in doubt, exclude rather than guess: an omitted role is fine, a dead role is the failure mode to avoid.
+
+For each confirmed role, provide the role title, company, the posting or last-refreshed date exactly as it appears on the page, and a direct link to the posting itself (not a search results page or a job-aggregator listing). Note whether the company has appeared in any other category this week, as co-occurrence is a strong signal. If you cannot confirm a single live role this week, output: "Nothing confirmed this week."
 
 CATEGORY 1 — REGULATORY ACTIONS
 
@@ -107,7 +113,7 @@ For each item in Categories 5 through 9, provide:
 When flagging errors and limitations, apply the following rules throughout the report.
 If a source is paywalled or only partially accessible, include the item but add a note in the Source field: "Paywalled — summary based on headline and visible excerpt only. Verify before acting."
 If a hiring window temperature assessment in Category 3 is based on a single signal or thin evidence, add a note after the temperature rating: "Low confidence — based on limited signal."
-If a job posting in Category 0 cannot be confirmed as currently active, note it explicitly: "Posting status unconfirmed — verify before outreach."
+If a job posting in Category 0 cannot be confirmed as currently live and accepting applications by opening the posting page, exclude it entirely. Do not list unverified or stale roles even with a caveat — in this category a wrong listing is worse than an omission.
 If two or more sources report the same event with conflicting details, include the item but note the conflict: "Conflicting reports — see sources." and provide both links.
 If web search returns no results for a specific target company in a given category, do not infer absence of news. Note it as: "No confirmed results found for [company] this week — coverage may be incomplete."
 At the end of the report, include a final section titled THIS WEEK'S RECOMMENDED POST. Select the single strongest LinkedIn content opportunity from the week's scan. Specify whether it is a thinky post (industry POV, analytical) or a human/leadership post (warmer, story-driven). Provide a one-sentence opening claim that Linda could use or adapt as the post's opening line. Do not write the full post — just the angle, the type, and the opening hook.
