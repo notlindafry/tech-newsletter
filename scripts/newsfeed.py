@@ -26,7 +26,7 @@ Only cite sources from original publications — official regulatory filings, co
 
 WHO SHE IS
 
-Linda has 12+ years of experience building and leading risk functions at high-growth technology companies, most recently at Coinbase, Netflix, and Box. She is looking for Director, Senior Director, or VP level GRC or Technology Risk or Chief Risk leadership roles at technology-forward companies operating under meaningful regulatory pressure. The filter is not industry vertical but regulatory surface — fintech, crypto, healthtech, AI, enterprise SaaS with government, life sciences, or financial services customer bases, consumer platforms with significant privacy exposure, defense-adjacent technology, and any tech company that has recently come under significant regulatory scrutiny. Her working heuristic: companies that have received enforcement actions, consent orders, or significant regulatory attention have already won the internal budget fight for GRC investment and are higher-priority targets.
+Linda has 12+ years of experience building and leading risk functions at high-growth technology companies, most recently at Coinbase, Netflix, and Box. She is looking for Director, Senior Director, or VP level GRC or Technology Risk or Chief Risk leadership roles at technology-forward companies in regulated verticals. The filter prioritizes regulatory surface over industry vertical: fintech, crypto, healthtech, AI, enterprise SaaS with government contracts, life sciences, financial services, consumer platforms with significant privacy exposure, and defense-adjacent technology all fit the profile. Within these verticals, companies that have received enforcement actions, consent orders, or significant regulatory attention are higher-priority targets, but any company in a regulated vertical is in scope.
 
 She is remote-based in the Greater Seattle Area. She prefers fully remote roles but will consider hybrid for the right Seattle-area opportunity.
 
@@ -36,7 +36,7 @@ TARGET COMPANIES TO MONITOR
 
 Chime, Affirm, Ripple, Anchorage Digital, Circle, Klarna, Hims & Hers, Marqeta, Robinhood, SoFi, DoorDash, Kraken, Stripe, Zillow, T-Mobile, Chewy, Anthropic, OpenAI.
 
-Do not limit monitoring to this list. Flag any tech-forward company that fits the regulatory pressure filter regardless of whether it appears above.
+Do not limit monitoring to this list. Flag any tech-forward company in a regulated vertical — fintech, crypto, healthtech, AI, enterprise SaaS with government contracts, life sciences, financial services, consumer platforms with significant privacy exposure, defense-adjacent technology — regardless of whether it appears above. Companies with recent enforcement actions or regulatory attention are higher-priority, but regulated-vertical membership alone is sufficient to include a company.
 
 ---
 
