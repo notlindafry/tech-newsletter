@@ -77,6 +77,8 @@ Reject the posting — do not list it — if any of the following are true: the 
 
 For each confirmed role, provide the role title, company, the posting or last-refreshed date exactly as it appears on the page, and a direct link to the role-specific posting itself (not a search results page, careers homepage, or job-aggregator listing). Note whether the company has appeared in any other category this week, as co-occurrence is a strong signal. If you cannot confirm a single live role this week, output: "Nothing confirmed this week."
 
+For every confirmed role, note its location and work arrangement (remote, hybrid, or onsite) as stated on the posting. If the role's primary location is outside the Greater Seattle Area, additionally flag the company's current work-location posture: whether it has recently announced or enforced a significant Return-to-Office (RTO) mandate, or whether it is genuinely remote-friendly. Base this on dated, verifiable sources — the posting's own remote/location terms, a company announcement, or recent news coverage — and say so briefly if you cannot confirm either way. This flag is informational only: do NOT exclude, downrank, or filter out an otherwise relevant out-of-area role because of an RTO push or because the work arrangement is unclear. Linda still wants to see these roles; the flag simply tells her what she would be walking into. Roles based in the Greater Seattle Area, or explicitly advertised as fully remote, do not need the RTO research.
+
 CATEGORY 1 — REGULATORY ACTIONS
 
 Enforcement orders, consent decrees, new rulemaking, or significant regulatory attention affecting any tech-forward company. Relevant regulators include OCC, CFPB, SEC, FTC, FCC, FDA, FDIC, FinCEN, state-level regulators, and major international regulators, notably in Europe.
@@ -124,6 +126,7 @@ For each item in Categories 0 through 3, provide:
 - Recommended action: a specific next step and, where relevant, a time window. 
 - Signal type: Job search signal, Content opportunity, or Both.
 - Hiring window temperature (Categories 0 and 2 only): Hot, Warm, Cold, or Avoid, with a one-sentence rationale.
+- Location and work arrangement (Category 0 only): the role's location and whether it is remote, hybrid, or onsite. For roles outside the Greater Seattle Area, also flag whether the company has a recent Return-to-Office (RTO) push or is remote-friendly, with the basis for that flag. This is informational and never a reason to omit the role.
 - Source: direct link to the original article, filing, or job posting.
 
 For each item in Categories 4 through 7, provide:
