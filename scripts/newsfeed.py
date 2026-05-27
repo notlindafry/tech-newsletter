@@ -1,4 +1,5 @@
 import anthropic
+import re
 import smtplib
 import os
 from datetime import datetime, timedelta
@@ -155,7 +156,17 @@ Format the full output as clean HTML suitable for an email client. Use <h2> for 
 
     # Extract all text blocks from the response (tool use returns mixed content)
     text_parts = [block.text for block in message.content if hasattr(block, "text")]
-    return "\n\n".join(text_parts)
+    full_text = "\n\n".join(text_parts)
+
+    # During web search the model emits text blocks narrating each search before
+    # producing the report. Drop everything before the first HTML tag so only the
+    # report itself is emailed.
+    match = re.search(
+        r"<(?:!doctype|html|head|body|h[1-6]|div|p|ul|ol|table|section)\b",
+        full_text,
+        re.IGNORECASE,
+    )
+    return full_text[match.start():] if match else full_text
 
 def send_email(body):
     sender = os.environ["GMAIL_ADDRESS"]
