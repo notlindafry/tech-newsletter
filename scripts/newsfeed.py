@@ -172,10 +172,18 @@ Format the full output as clean HTML suitable for an email client. Use <h2> for 
 
     message = client.messages.create(
         model="claude-opus-4-8",
-        max_tokens=10000,
+        max_tokens=32000,
         tools=[{"type": "web_search_20250305", "name": "web_search"}],
         messages=[{"role": "user", "content": prompt}]
     )
+
+    # If the model hit the output cap, the report is truncated mid-section.
+    # Surface it instead of emailing a half-complete newsletter.
+    if message.stop_reason == "max_tokens":
+        raise ValueError(
+            "Model response was truncated at the max_tokens limit; "
+            "raise max_tokens. Report not sent."
+        )
 
     # Extract all text blocks from the response (tool use returns mixed content)
     text_parts = [block.text for block in message.content if hasattr(block, "text")]
