@@ -28,6 +28,42 @@ def sanitize_html(html):
         url_schemes=ALLOWED_URL_SCHEMES,
     )
 
+
+# Approximate published Opus rates, in USD per token. Adjust if pricing changes
+# — these only drive the logged cost estimate, not anything functional.
+PRICE_INPUT = 15 / 1_000_000          # fresh (uncached) input
+PRICE_CACHE_WRITE = 18.75 / 1_000_000  # cache creation = 1.25x input
+PRICE_CACHE_READ = 1.5 / 1_000_000     # cache read = 0.1x input
+PRICE_OUTPUT = 75 / 1_000_000
+PRICE_WEB_SEARCH = 10 / 1_000          # $10 per 1,000 searches
+
+
+def log_usage(usage):
+    """Print real token/search usage and an estimated dollar cost to the run log."""
+    fresh_in = getattr(usage, "input_tokens", 0) or 0
+    cache_write = getattr(usage, "cache_creation_input_tokens", 0) or 0
+    cache_read = getattr(usage, "cache_read_input_tokens", 0) or 0
+    out = getattr(usage, "output_tokens", 0) or 0
+    server_tool = getattr(usage, "server_tool_use", None)
+    searches = getattr(server_tool, "web_search_requests", 0) or 0 if server_tool else 0
+
+    est_cost = (
+        fresh_in * PRICE_INPUT
+        + cache_write * PRICE_CACHE_WRITE
+        + cache_read * PRICE_CACHE_READ
+        + out * PRICE_OUTPUT
+        + searches * PRICE_WEB_SEARCH
+    )
+
+    print(
+        "Usage — "
+        f"input(fresh): {fresh_in:,}, cache write: {cache_write:,}, "
+        f"cache read: {cache_read:,}, output: {out:,}, web searches: {searches:,}\n"
+        f"Estimated cost: ${est_cost:.2f} "
+        "(rate estimate; verify against Anthropic pricing)"
+    )
+
+
 def get_newsfeed():
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
@@ -174,8 +210,21 @@ Format the full output as clean HTML suitable for an email client. Use <h2> for 
         model="claude-opus-4-8",
         max_tokens=32000,
         tools=[{"type": "web_search_20250305", "name": "web_search"}],
-        messages=[{"role": "user", "content": prompt}]
+        # Cache the large static prompt. The web-search tool loop makes many
+        # model turns within this single call, and each turn would otherwise
+        # reprocess the full prompt at full input price; caching it means
+        # turns after the first read the prefix from cache at ~10% the cost.
+        messages=[{
+            "role": "user",
+            "content": [{
+                "type": "text",
+                "text": prompt,
+                "cache_control": {"type": "ephemeral"},
+            }],
+        }],
     )
+
+    log_usage(message.usage)
 
     # If the model hit the output cap, the report is truncated mid-section.
     # Surface it instead of emailing a half-complete newsletter.
