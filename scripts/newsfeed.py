@@ -206,7 +206,9 @@ At the end of the report, include a final section titled THIS WEEK'S RECOMMENDED
 Format the full output as clean HTML suitable for an email client. Use <h2> for category headers, <h3> for item titles, <strong> for field labels. Wrap each item in a <div> with a thin bottom border. Use <a href=""> for all source links. Do not use markdown. Plain prose goes in <p> tags. Keep the HTML simple — no inline JavaScript, no external stylesheets, no complex nesting.
 """
 
-    message = client.messages.create(
+    # Stream the response. Web-search-driven Opus runs can exceed the SDK's
+    # 10-minute non-streaming timeout; streaming removes that ceiling.
+    with client.messages.stream(
         model="claude-opus-4-8",
         max_tokens=32000,
         tools=[{"type": "web_search_20250305", "name": "web_search"}],
@@ -222,7 +224,8 @@ Format the full output as clean HTML suitable for an email client. Use <h2> for 
                 "cache_control": {"type": "ephemeral"},
             }],
         }],
-    )
+    ) as stream:
+        message = stream.get_final_message()
 
     log_usage(message.usage)
 
