@@ -171,7 +171,7 @@ Format the full output as clean HTML suitable for an email client. Use <h2> for 
 """
 
     message = client.messages.create(
-        model="claude-opus-4-6",
+        model="claude-opus-4-8",
         max_tokens=10000,
         tools=[{"type": "web_search_20250305", "name": "web_search"}],
         messages=[{"role": "user", "content": prompt}]
