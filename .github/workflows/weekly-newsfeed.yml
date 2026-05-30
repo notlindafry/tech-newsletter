@@ -5,6 +5,9 @@ on:
     - cron: '0 15 * * 1'  # Monday 8AM PDT (UTC-7)
   workflow_dispatch:        # lets you trigger it manually to test
 
+permissions:
+  contents: read
+
 jobs:
   send-newsfeed:
     runs-on: ubuntu-latest
@@ -19,7 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install anthropic
+        run: pip install -r requirements.txt
 
       - name: Run newsfeed script
         env:

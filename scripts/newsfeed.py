@@ -1,16 +1,38 @@
 import anthropic
+import nh3
 import re
 import smtplib
 import os
-from datetime import datetime, timedelta
+import sys
+from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
+# The report is built from live web-search results, which are untrusted input.
+# A malicious page can attempt indirect prompt injection to make the model emit
+# tracking beacons (<img>), scripts, or javascript:/data: links that would fire
+# or exfiltrate when the email is opened. We never trust the model output as
+# safe HTML — it is run through an allowlist sanitizer before being emailed.
+# Only these tags/attributes survive; everything else (img, script, style,
+# iframe, event handlers, non-http(s)/mailto URLs) is stripped.
+ALLOWED_TAGS = {"h2", "h3", "p", "strong", "em", "ul", "ol", "li", "div", "a", "br"}
+ALLOWED_ATTRIBUTES = {"a": {"href", "title"}}
+ALLOWED_URL_SCHEMES = {"http", "https", "mailto"}
+
+
+def sanitize_html(html):
+    return nh3.clean(
+        html,
+        tags=ALLOWED_TAGS,
+        attributes=ALLOWED_ATTRIBUTES,
+        url_schemes=ALLOWED_URL_SCHEMES,
+    )
 
 def get_newsfeed():
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
-    today = datetime.utcnow().strftime("%B %d, %Y")
-    week_ago = (datetime.utcnow() - timedelta(days=7)).strftime("%B %d, %Y")
+    today = datetime.now(timezone.utc).strftime("%B %d, %Y")
+    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%B %d, %Y")
 
     prompt = f"""Today's date is {today}. The scan window is {week_ago} through {today}. Only include items published within this window. Verify the publication date of every source before including it — reject anything outside the scan window.
 
@@ -167,7 +189,17 @@ Format the full output as clean HTML suitable for an email client. Use <h2> for 
         full_text,
         re.IGNORECASE,
     )
-    return full_text[match.start():] if match else full_text
+    if not match:
+        # No HTML report was produced (e.g. the model only narrated, or the call
+        # returned empty). Fail loudly rather than emailing raw search narration.
+        raise ValueError("Model response contained no HTML report; nothing to send.")
+
+    # Sanitize before returning: web-search content is untrusted and the model's
+    # output is not a trusted source of safe HTML (see sanitize_html above).
+    report = sanitize_html(full_text[match.start():])
+    if not report.strip():
+        raise ValueError("Report was empty after sanitization; nothing to send.")
+    return report
 
 def send_email(body):
     sender = os.environ["GMAIL_ADDRESS"]
@@ -176,7 +208,7 @@ def send_email(body):
     msg = MIMEMultipart()
     msg["From"] = sender
     msg["To"] = sender
-    msg["Subject"] = f"Weekly Tech Intel Newsfeed — {datetime.utcnow().strftime('%B %d, %Y')}"
+    msg["Subject"] = f"Weekly Tech Intel Newsfeed — {datetime.now(timezone.utc).strftime('%B %d, %Y')}"
     msg.attach(MIMEText(body, "html"))
 
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
@@ -185,6 +217,12 @@ def send_email(body):
         server.sendmail(sender, sender, msg.as_string())
 
 if __name__ == "__main__":
-    newsfeed = get_newsfeed()
-    send_email(newsfeed)
+    try:
+        newsfeed = get_newsfeed()
+        send_email(newsfeed)
+    except Exception as exc:
+        # Exit non-zero so the GitHub Action surfaces the failure instead of
+        # reporting a green run after a bad or missing send.
+        print(f"Newsfeed run failed: {exc}", file=sys.stderr)
+        sys.exit(1)
     print("Sent successfully.")
