@@ -29,13 +29,22 @@ def sanitize_html(html):
     )
 
 
-# Approximate published Opus rates, in USD per token. Adjust if pricing changes
+# Published Opus 4.8 rates, in USD per token. Adjust if pricing changes
 # — these only drive the logged cost estimate, not anything functional.
-PRICE_INPUT = 15 / 1_000_000          # fresh (uncached) input
-PRICE_CACHE_WRITE = 18.75 / 1_000_000  # cache creation = 1.25x input
-PRICE_CACHE_READ = 1.5 / 1_000_000     # cache read = 0.1x input
-PRICE_OUTPUT = 75 / 1_000_000
-PRICE_WEB_SEARCH = 10 / 1_000          # $10 per 1,000 searches
+PRICE_INPUT = 5 / 1_000_000           # fresh (uncached) input
+PRICE_CACHE_WRITE = 6.25 / 1_000_000   # cache creation = 1.25x input
+PRICE_CACHE_READ = 0.5 / 1_000_000     # cache read = 0.1x input
+PRICE_OUTPUT = 25 / 1_000_000
+PRICE_WEB_SEARCH = 10 / 1_000          # $10 per 1,000 searches (web fetch is free)
+
+# Hard ceilings on the server-side tool loop. These bound the most variable
+# part of a run's cost: web_search is billed per use ($10/1,000), and each
+# web_fetch pulls page content into context as input tokens. Without caps a
+# runaway tool loop has no budget guard. The tools return a max_uses_exceeded
+# error once a cap is hit, so raise these if the report starts truncating.
+MAX_WEB_SEARCHES = 40
+MAX_WEB_FETCHES = 40
+MAX_FETCH_CONTENT_TOKENS = 25_000      # per-fetch cap on content pulled into context
 
 
 def log_usage(usage):
@@ -46,7 +55,10 @@ def log_usage(usage):
     out = getattr(usage, "output_tokens", 0) or 0
     server_tool = getattr(usage, "server_tool_use", None)
     searches = getattr(server_tool, "web_search_requests", 0) or 0 if server_tool else 0
+    fetches = getattr(server_tool, "web_fetch_requests", 0) or 0 if server_tool else 0
 
+    # Web fetch has no per-use charge; its cost shows up only as the input
+    # tokens for fetched content, already counted in fresh_in/cache above.
     est_cost = (
         fresh_in * PRICE_INPUT
         + cache_write * PRICE_CACHE_WRITE
@@ -58,7 +70,9 @@ def log_usage(usage):
     print(
         "Usage — "
         f"input(fresh): {fresh_in:,}, cache write: {cache_write:,}, "
-        f"cache read: {cache_read:,}, output: {out:,}, web searches: {searches:,}\n"
+        f"cache read: {cache_read:,}, output: {out:,}, "
+        f"web searches: {searches:,} (cap {MAX_WEB_SEARCHES}), "
+        f"web fetches: {fetches:,} (cap {MAX_WEB_FETCHES})\n"
         f"Estimated cost: ${est_cost:.2f} "
         "(rate estimate; verify against Anthropic pricing)"
     )
@@ -128,7 +142,7 @@ In addition to direct company career pages, scan the following venture-capital p
 
 The 7-day scan window above does NOT apply to this category. Roles are governed by whether they are currently live, not by when they were first posted. A still-open role posted three weeks ago is in scope; a role posted yesterday that has already closed is not.
 
-Every posting you include must be currently live and open to applications. Search results and search-engine snippets routinely surface roles that have already been filled or closed, so a search hit is not sufficient evidence that a role is open. Before including any role, open the posting page itself and confirm from its content that it is still accepting applications.
+Every posting you include must be currently live and open to applications. Search results and search-engine snippets routinely surface roles that have already been filled or closed, so a search hit is not sufficient evidence that a role is open. Before including any role, use the web fetch tool to open the posting page itself and confirm from its actual content that it is still accepting applications — do not rely on search snippets to make this call. The same applies when you need to verify a source's publication date falls inside the scan window: fetch the page rather than trusting a snippet.
 
 A page that returns successfully is NOT proof the role is live. Closed postings very frequently still "work" but silently redirect to the company's default careers homepage, a job-search index, or a generic "open positions" listing, while the original link continues to resolve. You must confirm that the final page you land on actually displays that exact role — its specific title and description, with an active apply control. If the link instead lands on a careers homepage, a job-search or "open positions" index, a search results page, or a "job not found" / "this position is no longer available" page, the role is dead — exclude it. The link you put in the Source field must point to that live, role-specific detail page, not to a redirect target or a careers landing page.
 
@@ -211,7 +225,26 @@ Format the full output as clean HTML suitable for an email client. Use <h2> for 
     with client.messages.stream(
         model="claude-opus-4-8",
         max_tokens=32000,
-        tools=[{"type": "web_search_20250305", "name": "web_search"}],
+        # web_search finds candidate items; web_fetch opens specific pages
+        # (job postings, filings, articles) to verify them — search snippets
+        # alone can't confirm a role is live or a date is in-window. The
+        # _20260209 versions add dynamic filtering (Claude filters results in
+        # a sandbox before they hit context), which improves accuracy and
+        # reduces token use on a search-heavy run. max_uses caps the loop;
+        # see the cost-ceiling constants above.
+        tools=[
+            {
+                "type": "web_search_20260209",
+                "name": "web_search",
+                "max_uses": MAX_WEB_SEARCHES,
+            },
+            {
+                "type": "web_fetch_20260209",
+                "name": "web_fetch",
+                "max_uses": MAX_WEB_FETCHES,
+                "max_content_tokens": MAX_FETCH_CONTENT_TOKENS,
+            },
+        ],
         # Cache the large static prompt. The web-search tool loop makes many
         # model turns within this single call, and each turn would otherwise
         # reprocess the full prompt at full input price; caching it means
