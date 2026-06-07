@@ -6,7 +6,7 @@ on:
   workflow_dispatch:        # lets you trigger it manually to test
 
 permissions:
-  contents: read
+  contents: write  # needed to commit the archived report back to the repo
 
 jobs:
   send-newsfeed:
@@ -30,3 +30,15 @@ jobs:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: python scripts/newsfeed.py
+
+      - name: Commit archived report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add archive/
+          if git diff --staged --quiet; then
+            echo "No archive changes to commit."
+          else
+            git commit -m "Archive newsfeed $(date -u +%Y-%m-%d)"
+            git push
+          fi

@@ -7,6 +7,8 @@ import sys
 from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from typing import List
+from pydantic import BaseModel
 
 # The report is built from live web-search results, which are untrusted input.
 # A malicious page can attempt indirect prompt injection to make the model emit
@@ -309,6 +311,117 @@ def send_email(body):
         server.login(sender, app_password)
         server.sendmail(sender, sender, msg.as_string())
 
+
+# Structured-output schema for the archived report. Every field is a plain
+# string (empty when it does not apply to a given item) and every field is
+# required — this keeps the JSON schema inside the structured-output
+# constraints and gives downstream consumers (dedup, trend analysis) a stable
+# shape to rely on week over week.
+class Highlight(BaseModel):
+    title: str
+    rationale: str
+
+
+class Role(BaseModel):
+    title: str
+    company: str
+    posting_date: str
+    location: str
+    work_arrangement: str       # remote / hybrid / onsite, as stated on the posting
+    rto_or_remote_flag: str     # RTO push or remote-friendly note for out-of-area roles
+    ipo_status: str             # IPO-prep / approaching-IPO note, if applicable
+    hiring_temperature: str     # Hot / Warm / Cold / Avoid
+    signal_type: str
+    source_url: str
+
+
+class Item(BaseModel):
+    category: str               # the scan category this item came from
+    title: str
+    what_happened: str
+    why_it_matters: str
+    recommended_action: str
+    hiring_temperature: str     # Categories 0 and 2 only; empty otherwise
+    signal_type: str
+    source_url: str
+
+
+class RecommendedPost(BaseModel):
+    post_type: str              # thinky or human/leadership
+    angle: str
+    opening_hook: str
+
+
+class Report(BaseModel):
+    report_date: str
+    top_highlights: List[Highlight]
+    open_roles: List[Role]
+    items: List[Item]
+    recommended_post: RecommendedPost
+
+
+# Cheap model for the extraction pass — this is a mechanical conversion of text
+# the main run already produced, so it does not need Opus. Bump to a larger
+# model if the archived JSON starts dropping or misreading items.
+EXTRACT_MODEL = "claude-haiku-4-5"
+ARCHIVE_DIR = "archive"
+
+
+def extract_structured(report_html, report_date):
+    """Convert the finished HTML report into schema-validated JSON."""
+    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    prompt = (
+        "Convert the following weekly intelligence report into structured JSON "
+        "matching the provided schema. Use only information present in the report "
+        "— do not invent, infer, or add items, and copy every source URL exactly "
+        "as it appears. For any field that does not apply to an item, use an empty "
+        f'string. Set report_date to "{report_date}". Put Category 0 open roles in '
+        "open_roles; put every other category's entries in items, tagging each with "
+        "its category name.\n\n"
+        f"REPORT:\n{report_html}"
+    )
+    # Structured outputs guarantees the response validates against the schema;
+    # no web tools here, so there is no citation conflict.
+    response = client.messages.parse(
+        model=EXTRACT_MODEL,
+        max_tokens=16000,
+        messages=[{"role": "user", "content": prompt}],
+        output_format=Report,
+    )
+    return response.parsed_output
+
+
+def archive_report(report_html):
+    """Persist the report to archive/ as HTML and (best-effort) structured JSON.
+
+    Called only after the email has been sent, so nothing here may fail the run.
+    The HTML is always written; the JSON extraction is wrapped separately so a
+    parsing hiccup still leaves us the human-readable archive.
+    """
+    date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    os.makedirs(ARCHIVE_DIR, exist_ok=True)
+
+    html_path = os.path.join(ARCHIVE_DIR, f"{date}.html")
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(report_html)
+    print(f"Archived HTML to {html_path}")
+
+    try:
+        report = extract_structured(report_html, date)
+        json_path = os.path.join(ARCHIVE_DIR, f"{date}.json")
+        with open(json_path, "w", encoding="utf-8") as f:
+            f.write(report.model_dump_json(indent=2))
+        print(
+            f"Archived structured JSON to {json_path} — "
+            f"{len(report.open_roles)} open roles, {len(report.items)} other items"
+        )
+    except Exception as exc:
+        print(
+            f"Structured extraction failed (HTML still archived): {exc}",
+            file=sys.stderr,
+        )
+
+
 if __name__ == "__main__":
     try:
         newsfeed = get_newsfeed()
@@ -318,4 +431,12 @@ if __name__ == "__main__":
         # reporting a green run after a bad or missing send.
         print(f"Newsfeed run failed: {exc}", file=sys.stderr)
         sys.exit(1)
+
+    # Archiving is purely best-effort: the email is already out, so a failure
+    # here must not flip the run red. The workflow commits whatever was written.
+    try:
+        archive_report(newsfeed)
+    except Exception as exc:
+        print(f"Archiving failed (email already sent): {exc}", file=sys.stderr)
+
     print("Sent successfully.")
