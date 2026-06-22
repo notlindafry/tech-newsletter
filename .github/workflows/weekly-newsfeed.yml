@@ -2,7 +2,10 @@ name: Weekly Newsfeed
 
 on:
   schedule:
-    - cron: '0 15 * * 1'  # Monday 8AM PDT (UTC-7)
+    # 6:07AM Pacific. Cron runs in UTC and ignores DST, so this targets PDT
+    # (UTC-7); after DST ends it lands at 5:07AM PST until updated. The :07
+    # minute also dodges the top-of-hour load that delays scheduled runs.
+    - cron: '7 13 * * 1'
   workflow_dispatch:        # lets you trigger it manually to test
 
 permissions:

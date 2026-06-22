@@ -30,7 +30,7 @@ workflow artifact, and emailed via Gmail.
    | `GMAIL_APP_PASSWORD` | yes | A Gmail [app password](https://myaccount.google.com/apppasswords), not your real password |
    | `CANDIDATE_PROFILE` | no | The real candidate profile (see below) |
 
-3. The schedule is Mondays 15:00 UTC (`.github/workflows/weekly-newsfeed.yml`);
+3. The schedule is Mondays 13:07 UTC — 6:07AM PT (`.github/workflows/weekly-newsfeed.yml`);
    trigger a test run any time via the workflow's "Run workflow" button.
 
 ### The candidate profile
