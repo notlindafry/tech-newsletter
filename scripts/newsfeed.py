@@ -591,6 +591,45 @@ def send_email(body):
         server.sendmail(sender, sender, msg.as_string())
 
 
+def verify_smtp_credentials():
+    """Pre-flight: confirm the Gmail credentials authenticate, run BEFORE the
+    expensive scan so an expired/revoked app password aborts the run in seconds
+    instead of discarding a paid generation at the send step.
+
+    Only a hard authentication rejection is treated as fatal — it is
+    deterministic and would fail the real send too. A transient connection or
+    network error here is NOT fatal: blocking an otherwise-good run on a
+    momentary blip would be worse than proceeding, and the send step already has
+    its own bounded retry. As everywhere in this script, never log the exception
+    message or the address (the repo is public) — only the exception class name.
+    """
+    sender = os.environ["GMAIL_ADDRESS"]
+    app_password = os.environ["GMAIL_APP_PASSWORD"]
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=30) as server:
+            server.starttls()
+            server.login(sender, app_password)
+    except smtplib.SMTPAuthenticationError:
+        # Deterministic credential failure — almost always an expired/revoked
+        # app password. Fail now, before any web-search spend. Keep the message
+        # content-free (no address, no server response) for the public log.
+        raise RuntimeError(
+            "Gmail rejected the credentials on a pre-flight check, before the "
+            "scan ran. The GMAIL_APP_PASSWORD secret is almost certainly expired "
+            "or revoked: generate a new app password at "
+            "https://myaccount.google.com/apppasswords (2-Step Verification must "
+            "be enabled) and update the secret. Run aborted before any spend."
+        ) from None
+    except (smtplib.SMTPException, OSError, TimeoutError) as exc:
+        # Couldn't complete the check for a transient reason. Don't let that
+        # block the run; the send step's retry covers transient send failures.
+        print(
+            f"Pre-flight SMTP check inconclusive ({type(exc).__name__}); "
+            "proceeding with the run.",
+            file=sys.stderr,
+        )
+
+
 # A generation run is expensive, so a transient SMTP failure shouldn't silently
 # lose it. We retry the send rather than archiving the report anywhere, because
 # this repo is public and the report renders the CANDIDATE_PROFILE secret.
@@ -631,6 +670,10 @@ def send_with_retry(body):
 
 if __name__ == "__main__":
     try:
+        # Verify the Gmail credentials up front so an expired app password fails
+        # the run in seconds rather than after a paid, search-heavy scan whose
+        # report can't be persisted anywhere (public repo) and is lost if unsent.
+        verify_smtp_credentials()
         report_fragment = get_newsfeed()
         date_str = datetime.now(timezone.utc).strftime("%B %d, %Y")
         newsfeed = build_html_email(report_fragment, date_str)
